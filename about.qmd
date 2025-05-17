@@ -2,8 +2,6 @@
 title: "About"
 ---
 
-About this site
+About this site: 
+Original Website was acting up just decided to make a new one for my updated file.
 
-```{r}
-1 + 1
-```
