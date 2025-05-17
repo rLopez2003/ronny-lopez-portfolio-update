@@ -1,0 +1,123 @@
+---
+title: "Project: Global Fish Watch Vessel Data"
+format: html
+execute: 
+  echo: false
+  warning: false
+  message: false
+embed-resources: true
+---
+
+### Data Description
+
+The data used was acquired through Global Fish Watch.You can view the original data source [here](https://globalfishingwatch.org/data-download/datasets/public-training-data-v1). Global Fishing Watch. 2020. Anonymized AIS training data, Version 1.0.
+
+### Data Cleaning
+
+In order to clean the data I had to first combing all my data sets into one. I created a new column that combined the gear type. I then cleared out all the data that was invalid. Finally I summarized and switched my data
+
+### Visualization 1: Average Vesses Speed by Gear Type
+
+This chart shows how the average speed of fishing vessels differs depending on the gear they use. It uses a boxplot to show the range and average speeds for each type of vessel.
+
+::: center
+![Boxplot comparing vessel speed across four gear types. The chart shows purse seines as the fastest on average, followed by pole and line, trawlers, and trollers.](average_vessel_speed.pdf)
+:::
+
+### Visualization 2: Time Spent Fishing by Gear Type
+
+This bar chart shows how much time, on average, vessels using each gear type spend fishing. It compares the proportion of time spent fishing to total time.
+
+::: center
+![Bar chart showing average percent of time spent fishing. Trollers spend the most time fishing, followed by trawlers, purse seines, and then pole and line.](average_time_fishing_by_gear.pdf)
+:::
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(lubridate)
+```
+
+```{r}
+gear_files <- list.files("fishing_data", full.names = TRUE)
+
+gear_labels <- basename(gear_files) %>% str_remove(".csv")
+
+fishing_data <- map2_dfr(
+  gear_files,       # list of CSV file paths
+  gear_labels,      # corresponding gear type labels
+  ~ read_csv(.x, show_col_types = FALSE) %>%  # read each file
+      mutate(gear_type = .y)                  # tag with gear type
+)
+
+```
+
+```{r}
+fishing_data_clean <- fishing_data %>%
+  # Remove rows where is_fishing is -1 (invalid/missing)
+  filter(is_fishing != -1) %>%
+  
+  # Convert Unix timestamp to POSIXct datetime format
+  mutate(
+    timestamp = as.POSIXct(timestamp, origin = "1970-01-01", tz = "UTC"),
+    
+    # Convert is_fishing scores to binary (0 = not fishing, 1 = fishing)
+    is_fishing = ifelse(is_fishing > 0, 1, 0)
+  ) %>%
+  
+  # Keep only relevant columns for analysis
+  select(mmsi, timestamp, speed, distance_from_shore, distance_from_port, is_fishing, gear_type)
+```
+
+```{r}
+# Group by vessel and gear type and compute summary statistics
+summary_by_vessel <- fishing_data_clean %>%
+  group_by(mmsi, gear_type) %>%  # Group by vessel and gear type
+  summarize(
+    avg_speed = mean(speed, na.rm = TRUE),                 # Average vessel speed
+    avg_dist_shore = mean(distance_from_shore, na.rm = TRUE),  # Average distance from shore
+    avg_dist_port = mean(distance_from_port, na.rm = TRUE),    # Average distance from port
+    pct_fishing = mean(is_fishing, na.rm = TRUE) * 100,    # Percent of time fishing
+    .groups = "drop"                                       # Ungroup after summarize
+  )
+
+```
+
+```{r}
+# Create a summary table of average fishing time by gear type
+summary_by_gear <- summary_by_vessel %>%
+  group_by(gear_type) %>%                       # Group by gear type
+  summarize(
+    mean_pct_fishing = mean(pct_fishing, na.rm = TRUE),  # Average % time fishing
+    .groups = "drop"
+  )
+```
+
+```{r}
+avgspd_gear <- ggplot(summary_by_vessel, aes(x = gear_type, y = avg_speed)) +
+  geom_boxplot() +  # Draw a boxplot
+  labs(
+    title = "Average Vessel Speed by Gear Type",
+    x = "Gear Type",
+    y = "Speed (knots)"
+  ) +
+  theme_minimal()   # Use a clean theme
+
+
+ggsave("average_vessel_speed.pdf", plot = avgspd_gear, width = 7, height = 5, dpi = 300)
+```
+
+```{r}
+
+TimeSpent_Fish <- ggplot(summary_by_gear, aes(x = reorder(gear_type, -mean_pct_fishing), y = mean_pct_fishing)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "Average Time Spent Fishing by Gear Type",
+    x = "Gear Type",
+    y = "% Time Fishing"
+  ) +
+  theme_minimal()
+
+# Then, save the plot as a PNG file
+ggsave("average_time_fishing_by_gear.pdf", plot = TimeSpent_Fish, width = 7, height = 5, dpi = 300)
+```
