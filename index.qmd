@@ -1,11 +1,24 @@
 ---
-title: "ronny-lopez-portfolio-update"
+title: "Ronny Lopez"
+about:
+  template: jolla
+  image: profilepic.jpg
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com
+    - icon: github
+      text: Github
+      href: https://github.com
 ---
 
-This is a Quarto website.
+Ronny Lopez is a Senior Marine Science student at [California State University, Monterey Bay].
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+## Education
 
-```{r}
-1 + 1
-```
+De Anza College | Cupertino, CA  
+A.A. Liberal Arts Emphasis in Science, Math, and Engineering| 2021-2023
+
+## Experience
+
+Big Sur Land Trust | Volunteer Steweard | January 2024 - May 2024

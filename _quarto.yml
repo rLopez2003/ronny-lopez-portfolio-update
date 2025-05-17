@@ -1,13 +1,17 @@
 project:
   type: website
-
+  output-dir: docs
+  
 website:
-  title: "ronny-lopez-portfolio-update"
+  title: "ronny-lopez-portfolio"
   navbar:
     left:
       - href: index.qmd
         text: Home
-      - about.qmd
+      - href: about.qmd
+        text: "About Me"
+      - href: geartype_web/geartype_data.qmd
+        text: "Project: Fishing Vessel Gear Data"
 
 format:
   html:

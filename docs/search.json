@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "geartype_web/geartype_data.html",
+    "href": "geartype_web/geartype_data.html",
+    "title": "Project: Global Fish Watch Vessel Data",
+    "section": "",
+    "text": "Data Description\nThe data used was acquired through Global Fish Watch.You can view the original data source here. Global Fishing Watch. 2020. Anonymized AIS training data, Version 1.0.\n\n\nData Cleaning\nIn order to clean the data I had to first combing all my data sets into one. I created a new column that combined the gear type. I then cleared out all the data that was invalid. Finally I summarized and switched my data\n\n\nVisualization 1: Average Vesses Speed by Gear Type\nThis chart shows how the average speed of fishing vessels differs depending on the gear they use. It uses a boxplot to show the range and average speeds for each type of vessel.\n\n\n\n\nBoxplot comparing vessel speed across four gear types. The chart shows purse seines as the fastest on average, followed by pole and line, trawlers, and trollers.\n\n\n\n\n\nVisualization 2: Time Spent Fishing by Gear Type\nThis bar chart shows how much time, on average, vessels using each gear type spend fishing. It compares the proportion of time spent fishing to total time.\n\n\n\n\nBar chart showing average percent of time spent fishing. Trollers spend the most time fishing, followed by trawlers, purse seines, and then pole and line."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site: Original Website was acting up just decided to make a new one for my updated file."
+  }
+]
